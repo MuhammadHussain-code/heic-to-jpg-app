@@ -3,7 +3,66 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HEIC → JPG</title>
+    <meta name="theme-color" content="#0f1219" />
+    <title>SnapForge — convert HEIC to JPG and more, 100% in-browser</title>
+    <meta
+      name="description"
+      content="Free, private image tools: HEIC to JPG, image converter, compressor, resizer, App Store screenshots, EXIF stripper. Everything runs in your browser — no uploads."
+    />
+    <meta name="keywords" content="HEIC to JPG, image converter, compress image, resize image, App Store screenshots, EXIF, PNG to JPG, WebP" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SnapForge — private, in-browser image tools" />
+    <meta property="og:description" content="Convert HEIC to JPG, compress and resize images, and more — without uploading a single file." />
+    <meta property="og:site_name" content="SnapForge" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SnapForge — private, in-browser image tools" />
+    <meta name="twitter:description" content="HEIC to JPG, image converter, compressor, and more. Everything runs locally in your browser." />
+
+    <link rel="canonical" href="https://snapforge.example/" />
+
+    <!-- Preconnect: noop in dev, useful in production when ads are wired up. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
+    <!-- Site-wide JSON-LD: WebSite + Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "SnapForge",
+          "url": "https://snapforge.example/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://snapforge.example/#/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "name": "SnapForge",
+          "url": "https://snapforge.example/",
+          "description": "Browser-native image tools: HEIC to JPG, conversion, compression, resizing, and more."
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "SnapForge HEIC to JPG converter",
+          "operatingSystem": "Any (browser)",
+          "applicationCategory": "MultimediaApplication",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
