@@ -1,11 +1,13 @@
 import { Link } from "../lib/router";
 import { isPro, setPlan, useSubscription } from "../lib/subscription";
 import { clearHistory, useUsageStats } from "../lib/usage";
+import { clearWaitlist, removeFromWaitlist, useWaitlist } from "../lib/waitlist";
 import { formatBytes } from "../lib/image";
 
 export function Account(): React.ReactElement {
   const sub = useSubscription();
   const stats = useUsageStats();
+  const waitlist = useWaitlist();
   const pro = isPro(sub);
 
   return (
@@ -86,12 +88,54 @@ export function Account(): React.ReactElement {
         </section>
       )}
 
+      {waitlist.length > 0 && (
+        <section>
+          <h2>Early-access signups on this device</h2>
+          <p className="muted">
+            While Pro is in beta, we store waitlist signups locally. Once a
+            real backend is wired up, these will be POSTed to your CRM.
+          </p>
+          <ul className="waitlist-admin">
+            {waitlist.map((entry) => (
+              <li key={entry.email}>
+                <span className="waitlist-admin__email">{entry.email}</span>
+                <span className="waitlist-admin__source">via {entry.source}</span>
+                <span className="waitlist-admin__date">
+                  {new Date(entry.at).toLocaleString()}
+                </span>
+                <button
+                  type="button"
+                  className="btn btn--ghost"
+                  onClick={() => {
+                    if (confirm(`Remove ${entry.email} from waitlist?`)) {
+                      removeFromWaitlist(entry.email);
+                    }
+                  }}
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={() => {
+              if (confirm("Clear all waitlist signups?")) clearWaitlist();
+            }}
+          >
+            Clear waitlist
+          </button>
+        </section>
+      )}
+
       <section>
         <h2>Data</h2>
         <p>
-          We store your plan and a short history of converted filenames in
-          localStorage. Clear it from your browser settings, or use the button
-          above. None of this data leaves your device.
+          We store your plan, a short history of converted filenames, and any
+          early-access signups in localStorage. Clear them from your browser
+          settings, or use the buttons above. None of this data leaves your
+          device.
         </p>
       </section>
     </div>

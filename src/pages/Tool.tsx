@@ -227,6 +227,7 @@ function renderTool(slug: string): React.ReactNode {
     case "watermark":
       return (
         <ProGate
+          source="watermark-gate"
           title="Watermark is a Pro feature"
           reason="Pro unlocks watermarking, batch limits, and the rest of the power tools."
           features={[
@@ -242,6 +243,7 @@ function renderTool(slug: string): React.ReactNode {
     case "image-to-pdf":
       return (
         <ProGate
+          source="image-to-pdf-gate"
           title="Images → PDF is a Pro feature"
           reason="Combine multiple images into a single PDF for proofs, sheets, and quick share-outs."
           features={[
