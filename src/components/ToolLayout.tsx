@@ -1,4 +1,4 @@
-import { AdSlot } from "./AdSlot";
+import { NetworkAdSlot } from "./AdSlot";
 import { Link } from "../lib/router";
 import { TOOLS, type ToolMeta } from "../lib/tools";
 
@@ -47,7 +47,7 @@ export function ToolLayout({
             </section>
           )}
 
-          <AdSlot size="inline" label="Sponsored" />
+          <NetworkAdSlot size="inline" />
 
           {faqs && faqs.length > 0 && (
             <section className="content-section">
@@ -65,7 +65,7 @@ export function ToolLayout({
         </main>
 
         <aside className="tool-layout__side">
-          <AdSlot size="rectangle" />
+          <NetworkAdSlot size="rectangle" />
           {related.length > 0 && (
             <div className="related-card">
               <h3>Related tools</h3>
@@ -84,7 +84,7 @@ export function ToolLayout({
               </ul>
             </div>
           )}
-          <AdSlot size="square" />
+          <NetworkAdSlot size="square" />
         </aside>
       </div>
     </div>

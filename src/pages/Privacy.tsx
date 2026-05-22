@@ -60,7 +60,7 @@ export function Privacy(): React.ReactElement {
         <p>
           Under GDPR and CCPA, you have the right to access, correct, and delete
           any personal data we hold. Email{" "}
-          <a href="mailto:privacy@snapforge.example">privacy@snapforge.example</a>{" "}
+          <a href="mailto:privacy@muhammad-hussain.com">privacy@muhammad-hussain.com</a>{" "}
           and we'll respond within 30 days.
         </p>
       </section>

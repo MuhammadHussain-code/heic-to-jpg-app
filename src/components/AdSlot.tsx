@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { isPro, useSubscription } from "../lib/subscription";
 import { Link } from "../lib/router";
-
-type AdSize = "leaderboard" | "rectangle" | "square" | "skyscraper" | "inline";
+import { ADSENSE_CLIENT, ADSENSE_SLOTS, type AdSize } from "../lib/ads";
 
 const DIMENSIONS: Record<AdSize, { w: number; h: number; label: string }> = {
   leaderboard: { w: 728, h: 90, label: "728×90" },
@@ -49,7 +48,6 @@ export function AdSlot({
   const sub = useSubscription();
   const [adIndex] = useState(() => Math.floor(Math.random() * HOUSE_ADS.length));
 
-  // Pro and Team users see no ads.
   if (isPro(sub)) return null;
 
   const dim = DIMENSIONS[size];
@@ -81,34 +79,37 @@ export function AdSlot({
 }
 
 /**
- * In a real deployment you'd wire AdSense / Carbon / EthicalAds here.
- * This component keeps an inline "house ad" until a network is configured,
- * so the layout is always realistic.
+ * Renders a real AdSense ad unit if a slot ID is configured for this size
+ * via VITE_ADSENSE_SLOT_* env vars; otherwise falls back to the rotating
+ * house ad. Pro/Team users see nothing either way.
  */
-export function NetworkAdSlot({ slot }: { slot: string }): React.ReactElement | null {
+export function NetworkAdSlot({
+  size = "rectangle",
+}: {
+  size?: AdSize;
+}): React.ReactElement | null {
   const sub = useSubscription();
-  const [adsenseId] = useState(() =>
-    (window as unknown as { __ADSENSE_ID__?: string }).__ADSENSE_ID__,
-  );
+  const slotId = ADSENSE_SLOTS[size];
 
   useEffect(() => {
-    if (!adsenseId || isPro(sub)) return;
+    if (!slotId || isPro(sub)) return;
     try {
       // @ts-expect-error AdSense pushes onto the global queue.
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
-      // ignore initialization errors in dev
+      // ignore — common in dev or when adsbygoogle.js is blocked.
     }
-  }, [adsenseId, sub]);
+  }, [slotId, sub]);
 
   if (isPro(sub)) return null;
-  if (!adsenseId) return <AdSlot size="rectangle" label={`Ad · ${slot}`} />;
+  if (!slotId) return <AdSlot size={size} />;
+
   return (
     <ins
-      className="adsbygoogle"
+      className={`adsbygoogle ad-slot ad-slot--${size}`}
       style={{ display: "block" }}
-      data-ad-client={adsenseId}
-      data-ad-slot={slot}
+      data-ad-client={ADSENSE_CLIENT}
+      data-ad-slot={slotId}
       data-ad-format="auto"
       data-full-width-responsive="true"
     />

@@ -1,4 +1,4 @@
-import { AdSlot } from "../components/AdSlot";
+import { NetworkAdSlot } from "../components/AdSlot";
 import { Link } from "../lib/router";
 import { CATEGORIES, TOOLS } from "../lib/tools";
 import { useUsageStats } from "../lib/usage";
@@ -36,7 +36,7 @@ export function Home(): React.ReactElement {
             <li>🆓 Free for personal use</li>
           </ul>
         </div>
-        <AdSlot size="rectangle" label="Sponsored" />
+        <NetworkAdSlot size="rectangle" />
       </section>
 
       {stats.totalConversions > 0 && (
@@ -84,7 +84,7 @@ export function Home(): React.ReactElement {
         })}
       </section>
 
-      <AdSlot size="leaderboard" />
+      <NetworkAdSlot size="leaderboard" />
 
       <section className="content-section">
         <h2>Why SnapForge?</h2>
