@@ -1614,8 +1614,18 @@ code {
 
 .account-actions {
   display: flex;
-  gap: 0.6rem;
+  flex-direction: column;
+  gap: 0.4rem;
   margin-top: 0.75rem;
+}
+.account-actions__row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.account-actions .btn.is-current {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .stats-grid {
@@ -1950,4 +1960,106 @@ code {
   padding: 0.4rem 0.7rem;
   color: var(--text);
   font-size: 0.85rem;
+}
+
+/* ---------- Yearly toggle pill: bright green on active blue ---------- */
+.pricing-toggle__opt.is-on .pill--saving {
+  background: var(--success);
+  color: #0f1219;
+  font-weight: 700;
+}
+
+/* ---------- Modal ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+.modal__panel {
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: modal-in 160ms ease-out;
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+.modal__close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal__close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+.modal__panel .waitlist {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  padding: 1.75rem 1.5rem 1.25rem;
+}
+
+/* ---------- ConfirmButton armed state ---------- */
+.btn--armed {
+  background: rgba(245, 101, 101, 0.18) !important;
+  color: #fc8181 !important;
+  border-color: rgba(245, 101, 101, 0.45) !important;
+}
+
+/* ---------- MailerLite embed inside our card ---------- */
+.waitlist .ml-embedded {
+  margin: 0.5rem 0;
+  min-height: 56px;
+}
+/* Hide MailerLite's own headline/description blocks since we render our own copy. */
+.waitlist .ml-form-embedHeader,
+.waitlist .ml-form-embedContent {
+  display: none !important;
+}
+/* Strip MailerLite's panel chrome so the form lives directly on our card. */
+.waitlist .ml-form-embedWrapper,
+.waitlist .ml-form-embedWrapper.embedForm {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+.waitlist .ml-form-embedBody,
+.waitlist .ml-form-align-center {
+  padding: 0 !important;
+  text-align: left !important;
 }

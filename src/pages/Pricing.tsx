@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { EarlyAccessForm } from "../components/EarlyAccessForm";
+import { Modal } from "../components/Modal";
 import { Link } from "../lib/router";
-import { isPro, setPlan, useSubscription } from "../lib/subscription";
 
 type Billing = "monthly" | "yearly";
+type ModalKind = null | "pro" | "team";
 
 export function Pricing(): React.ReactElement {
   const [billing, setBilling] = useState<Billing>("yearly");
-  const sub = useSubscription();
-  const pro = isPro(sub);
+  const [modal, setModal] = useState<ModalKind>(null);
 
   const proPrice = billing === "monthly" ? "$5" : "$3.50";
   const teamPrice = billing === "monthly" ? "$19" : "$15";
@@ -18,8 +18,8 @@ export function Pricing(): React.ReactElement {
       <header className="pricing-head">
         <h1>Simple pricing</h1>
         <p>
-          Free for everyday use. Upgrade when you need bigger batches, larger files,
-          and the advanced tools.
+          Free for everyday use. Pro launches soon — join the waitlist for 50% off
+          your first year.
         </p>
         <div className="pricing-toggle">
           <button
@@ -40,7 +40,7 @@ export function Pricing(): React.ReactElement {
       </header>
 
       <div className="pricing-grid">
-        <article className={`pricing-card${sub.plan === "free" ? " is-current" : ""}`}>
+        <article className="pricing-card is-current">
           <header>
             <h2>Free</h2>
             <p className="pricing-card__price">
@@ -57,22 +57,12 @@ export function Pricing(): React.ReactElement {
             <li>✓ 20 files per batch, 50 MB per file</li>
             <li className="muted">· Includes ads</li>
           </ul>
-          {sub.plan === "free" ? (
-            <button type="button" className="btn btn--ghost btn--block" disabled>
-              Your current plan
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn--ghost btn--block"
-              onClick={() => setPlan("free")}
-            >
-              Downgrade to Free
-            </button>
-          )}
+          <button type="button" className="btn btn--ghost btn--block" disabled>
+            Your current plan
+          </button>
         </article>
 
-        <article className={`pricing-card pricing-card--featured${sub.plan === "pro" ? " is-current" : ""}`}>
+        <article className="pricing-card pricing-card--featured">
           <header>
             <p className="pricing-card__badge">Most popular</p>
             <h2>Pro</h2>
@@ -93,25 +83,16 @@ export function Pricing(): React.ReactElement {
             <li>✓ Up to 20,000×20,000 px</li>
             <li>✓ Priority email support</li>
           </ul>
-          {sub.plan === "pro" ? (
-            <button type="button" className="btn btn--primary btn--block" disabled>
-              Your current plan
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn--primary btn--block"
-              onClick={() => {
-                setPlan("pro");
-                alert("Pro activated for this demo build. In production, this would launch checkout.");
-              }}
-            >
-              {pro ? "Switch to Pro" : "Start free 7-day trial"}
-            </button>
-          )}
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            onClick={() => setModal("pro")}
+          >
+            Join waitlist — 50% off launch
+          </button>
         </article>
 
-        <article className={`pricing-card${sub.plan === "team" ? " is-current" : ""}`}>
+        <article className="pricing-card">
           <header>
             <h2>Team</h2>
             <p className="pricing-card__price">
@@ -128,35 +109,47 @@ export function Pricing(): React.ReactElement {
             <li>✓ 99.9% uptime SLA on API</li>
             <li>✓ Dedicated success manager</li>
           </ul>
-          {sub.plan === "team" ? (
-            <button type="button" className="btn btn--primary btn--block" disabled>
-              Your current plan
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn--ghost btn--block"
-              onClick={() => {
-                setPlan("team");
-                alert("Team plan activated for this demo build.");
-              }}
-            >
-              Contact sales
-            </button>
-          )}
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={() => setModal("team")}
+          >
+            Join team waitlist
+          </button>
         </article>
       </div>
 
-      {!pro && (
-        <section className="content-section pricing-waitlist">
+      <section className="content-section pricing-waitlist">
+        <EarlyAccessForm
+          source="pricing-banner"
+          variant="banner"
+          headline="Pro launches soon — save 50% by joining early"
+          subheadline="We're rolling Pro out over the next few weeks. Anyone on the early-access list gets a launch-day discount code (50% off the first year) plus first access to the Background Remover and Batch Rename tools while they're in beta."
+        />
+      </section>
+
+      <Modal
+        isOpen={modal !== null}
+        onClose={() => setModal(null)}
+        title={modal === "team" ? "Join the team waitlist" : "Join the Pro waitlist"}
+      >
+        {modal === "pro" && (
           <EarlyAccessForm
-            source="pricing"
-            variant="banner"
-            headline="Pro launches soon — save 50% by joining early"
-            subheadline="We're rolling Pro out over the next few weeks. Anyone on the early-access list gets a launch-day discount code (50% off the first year) plus first access to the Background Remover and Batch Rename tools while they're in beta."
+            source="pricing-pro-modal"
+            variant="modal"
+            headline="Get 50% off when Pro launches"
+            subheadline="Drop your email and we'll send your launch-day discount code. Pro unlocks Watermarking, Images → PDF, Background Remover, and Batch Rename — all in-browser, all private."
           />
-        </section>
-      )}
+        )}
+        {modal === "team" && (
+          <EarlyAccessForm
+            source="pricing-team-modal"
+            variant="modal"
+            headline="Team plans launch alongside Pro"
+            subheadline="Join the waitlist and we'll reach out at launch with team pricing, shared brand presets, and a Conversion API trial. The 50% launch discount applies to team seats too."
+          />
+        )}
+      </Modal>
 
       <section className="content-section">
         <h2>Compare plans</h2>
@@ -195,19 +188,23 @@ export function Pricing(): React.ReactElement {
         <h2>Questions about pricing</h2>
         <div className="faq">
           <details>
+            <summary>When does Pro launch?</summary>
+            <p>Pro is in private beta now. Join the waitlist above and you'll be the first to know — plus you'll get a 50%-off discount code on launch day.</p>
+          </details>
+          <details>
             <summary>Can I cancel anytime?</summary>
-            <p>Yes — cancel from your account dashboard and your plan stays Pro until the period ends.</p>
+            <p>Yes — once Pro launches, you can cancel from your account dashboard and your plan stays Pro until the period ends.</p>
           </details>
           <details>
             <summary>Do you offer a student discount?</summary>
-            <p>Yes — email <Link to="/contact">support</Link> from your .edu address for 50% off.</p>
+            <p>Yes — email <Link to="/contact">support</Link> from your .edu address for 50% off, stackable with the launch discount.</p>
           </details>
           <details>
-            <summary>What payment methods do you accept?</summary>
+            <summary>What payment methods will you accept?</summary>
             <p>Credit cards, Apple Pay, Google Pay. Team plans can also pay by invoice.</p>
           </details>
           <details>
-            <summary>Is there a money-back guarantee?</summary>
+            <summary>Will there be a money-back guarantee?</summary>
             <p>30 days. Reach out and we'll refund, no questions asked.</p>
           </details>
         </div>
