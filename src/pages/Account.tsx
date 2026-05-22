@@ -1,14 +1,15 @@
-import { Link } from "../lib/router";
+import { ConfirmButton } from "../components/ConfirmButton";
+import { Link, useRoute } from "../lib/router";
 import { isPro, setPlan, useSubscription } from "../lib/subscription";
 import { clearHistory, useUsageStats } from "../lib/usage";
-import { clearWaitlist, removeFromWaitlist, useWaitlist } from "../lib/waitlist";
 import { formatBytes } from "../lib/image";
 
 export function Account(): React.ReactElement {
   const sub = useSubscription();
   const stats = useUsageStats();
-  const waitlist = useWaitlist();
+  const route = useRoute();
   const pro = isPro(sub);
+  const devPlans = route.query.get("devplans") === "1";
 
   return (
     <div className="page-doc">
@@ -16,29 +17,50 @@ export function Account(): React.ReactElement {
 
       <section>
         <h2>Plan</h2>
-        <p>
-          You're on the <strong>{sub.plan === "team" ? "Team" : sub.plan === "pro" ? "Pro" : "Free"}</strong>{" "}
-          plan{sub.renewsAt ? ` — renews ${new Date(sub.renewsAt).toLocaleDateString()}` : ""}.
-        </p>
-        <div className="account-actions">
-          {pro ? (
-            <button
-              type="button"
-              className="btn btn--ghost"
-              onClick={() => {
-                if (confirm("Downgrade to Free? You'll lose access to Pro tools at the end of your period.")) {
-                  setPlan("free");
-                }
-              }}
-            >
-              Cancel subscription
-            </button>
-          ) : (
-            <Link to="/pricing" className="btn btn--primary">
-              See Pro plans
-            </Link>
-          )}
-        </div>
+        {pro ? (
+          <p>
+            You're on the <strong>{sub.plan === "team" ? "Team" : "Pro"}</strong>{" "}
+            plan{sub.renewsAt ? ` — renews ${new Date(sub.renewsAt).toLocaleDateString()}` : ""}.
+          </p>
+        ) : (
+          <p>
+            You're on the <strong>Free</strong> plan. Pro is launching soon —{" "}
+            <Link to="/pricing">join the waitlist for 50% off</Link>.
+          </p>
+        )}
+        {devPlans && (
+          <div className="account-actions">
+            <p className="muted" style={{ marginBottom: "0.5rem" }}>
+              Dev preview — toggle plans to see Pro/Team UI without paying.
+            </p>
+            <div className="account-actions__row">
+              <button
+                type="button"
+                className={`btn btn--ghost${sub.plan === "free" ? " is-current" : ""}`}
+                onClick={() => setPlan("free")}
+                disabled={sub.plan === "free"}
+              >
+                Free
+              </button>
+              <button
+                type="button"
+                className={`btn btn--ghost${sub.plan === "pro" ? " is-current" : ""}`}
+                onClick={() => setPlan("pro")}
+                disabled={sub.plan === "pro"}
+              >
+                Pro
+              </button>
+              <button
+                type="button"
+                className={`btn btn--ghost${sub.plan === "team" ? " is-current" : ""}`}
+                onClick={() => setPlan("team")}
+                disabled={sub.plan === "team"}
+              >
+                Team
+              </button>
+            </div>
+          </div>
+        )}
       </section>
 
       <section>
@@ -76,67 +98,20 @@ export function Account(): React.ReactElement {
               </li>
             ))}
           </ul>
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={() => {
-              if (confirm("Clear local conversion history?")) clearHistory();
-            }}
-          >
-            Clear history
-          </button>
-        </section>
-      )}
-
-      {waitlist.length > 0 && (
-        <section>
-          <h2>Early-access signups on this device</h2>
-          <p className="muted">
-            Signups are sent to MailerLite — the full list lives in your
-            MailerLite dashboard. The entries below are a local mirror of what
-            was submitted from this browser, kept for quick reference.
-          </p>
-          <ul className="waitlist-admin">
-            {waitlist.map((entry) => (
-              <li key={entry.email}>
-                <span className="waitlist-admin__email">{entry.email}</span>
-                <span className="waitlist-admin__source">via {entry.source}</span>
-                <span className="waitlist-admin__date">
-                  {new Date(entry.at).toLocaleString()}
-                </span>
-                <button
-                  type="button"
-                  className="btn btn--ghost"
-                  onClick={() => {
-                    if (confirm(`Remove ${entry.email} from waitlist?`)) {
-                      removeFromWaitlist(entry.email);
-                    }
-                  }}
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-          <button
-            type="button"
-            className="btn btn--ghost"
-            onClick={() => {
-              if (confirm("Clear all waitlist signups?")) clearWaitlist();
-            }}
-          >
-            Clear waitlist
-          </button>
+          <ConfirmButton
+            label="Clear history"
+            confirmLabel="Click again to clear"
+            onConfirm={clearHistory}
+          />
         </section>
       )}
 
       <section>
         <h2>Data</h2>
         <p>
-          We store your plan, a short history of converted filenames, and any
-          early-access signups in localStorage. Clear them from your browser
-          settings, or use the buttons above. None of this data leaves your
-          device.
+          We store your plan and a short history of converted filenames in
+          localStorage. Waitlist signups go directly to our email provider —
+          nothing else leaves your device.
         </p>
       </section>
     </div>

@@ -1,66 +1,28 @@
-import { useState } from "react";
-import { addToWaitlist, isValidEmail } from "../lib/waitlist";
+// The form itself is hydrated by MailerLite's universal.js, loaded from
+// index.html. Anywhere on the page that contains a div with class
+// "ml-embedded" and the matching data-form key (cbmNHz) will be replaced
+// with the configured signup form. We render that div inside our own
+// card so the surrounding copy (headline, subhead, legal) stays in our
+// design system; the form input + button come from MailerLite.
+//
+// To swap forms in MailerLite, update the data-form value here and the
+// ml('account', ...) call in index.html.
 
-type State =
-  | { kind: "idle" }
-  | { kind: "submitting" }
-  | { kind: "success"; email: string }
-  | { kind: "error"; message: string };
+const MAILERLITE_FORM_ID = "cbmNHz";
 
 export function EarlyAccessForm({
-  source,
   variant = "card",
   headline,
   subheadline,
 }: {
-  /** Tag stored on each signup so we can see which placement converts. */
-  source: string;
-  variant?: "card" | "inline" | "banner";
+  /** Tag for which placement this is — used for our own conversion analytics
+   * once we add it. Currently unused since MailerLite doesn't expose a way
+   * to inject a hidden field per-embed. */
+  source?: string;
+  variant?: "card" | "inline" | "banner" | "modal";
   headline?: string;
   subheadline?: string;
 }): React.ReactElement {
-  const [email, setEmail] = useState("");
-  const [state, setState] = useState<State>({ kind: "idle" });
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isValidEmail(email)) {
-      setState({ kind: "error", message: "Please enter a valid email address." });
-      return;
-    }
-    setState({ kind: "submitting" });
-    const result = await addToWaitlist(email, source);
-    if (result.ok) {
-      setState({ kind: "success", email: result.entry.email });
-      setEmail("");
-    } else if (result.reason === "duplicate") {
-      setState({
-        kind: "error",
-        message: "You're already on the list — we'll be in touch.",
-      });
-    } else if (result.reason === "network") {
-      setState({
-        kind: "error",
-        message: "Couldn't reach our signup service. Check your connection and try again.",
-      });
-    } else {
-      setState({ kind: "error", message: "That email doesn't look valid." });
-    }
-  };
-
-  if (state.kind === "success") {
-    return (
-      <div className={`waitlist waitlist--${variant} waitlist--success`}>
-        <div className="waitlist__success-mark" aria-hidden>✓</div>
-        <h3>You're on the list</h3>
-        <p>
-          We'll email <strong>{state.email}</strong> the moment Pro launches —
-          with your <strong>50% off</strong> launch discount code.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className={`waitlist waitlist--${variant}`}>
       <div className="waitlist__copy">
@@ -71,33 +33,7 @@ export function EarlyAccessForm({
             "Pro is in private beta. Drop your email and we'll send you a launch-day discount code — plus first dibs on the Background Remover and Batch Rename tools."}
         </p>
       </div>
-      <form className="waitlist__form" onSubmit={submit} noValidate>
-        <input
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (state.kind === "error") setState({ kind: "idle" });
-          }}
-          required
-          aria-label="Email address"
-          autoComplete="email"
-          disabled={state.kind === "submitting"}
-        />
-        <button
-          type="submit"
-          className="btn btn--primary"
-          disabled={state.kind === "submitting"}
-        >
-          {state.kind === "submitting" ? "Joining…" : "Get early access"}
-        </button>
-      </form>
-      {state.kind === "error" && (
-        <p className="waitlist__error" role="alert">
-          {state.message}
-        </p>
-      )}
+      <div className="ml-embedded" data-form={MAILERLITE_FORM_ID} />
       <p className="waitlist__legal">
         Unsubscribe anytime. We'll never share your email or send more than one
         update per month.
