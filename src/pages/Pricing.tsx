@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EarlyAccessForm } from "../components/EarlyAccessForm";
 import { Link } from "../lib/router";
 import { isPro, setPlan, useSubscription } from "../lib/subscription";
 
@@ -145,6 +146,17 @@ export function Pricing(): React.ReactElement {
           )}
         </article>
       </div>
+
+      {!pro && (
+        <section className="content-section pricing-waitlist">
+          <EarlyAccessForm
+            source="pricing"
+            variant="banner"
+            headline="Pro launches soon — save 50% by joining early"
+            subheadline="We're rolling Pro out over the next few weeks. Anyone on the early-access list gets a launch-day discount code (50% off the first year) plus first access to the Background Remover and Batch Rename tools while they're in beta."
+          />
+        </section>
+      )}
 
       <section className="content-section">
         <h2>Compare plans</h2>

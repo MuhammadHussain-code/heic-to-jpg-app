@@ -1,3 +1,4 @@
+import { EarlyAccessForm } from "./EarlyAccessForm";
 import { Link } from "../lib/router";
 import { isPro, useSubscription } from "../lib/subscription";
 
@@ -5,11 +6,14 @@ export function ProGate({
   title,
   reason,
   features,
+  source,
   children,
 }: {
   title: string;
   reason: string;
   features: string[];
+  /** Identifier passed to the waitlist form so we can track conversions per tool. */
+  source: string;
   children: React.ReactNode;
 }): React.ReactElement {
   const sub = useSubscription();
@@ -32,6 +36,17 @@ export function ProGate({
           Back to free tools
         </Link>
       </div>
+
+      <div className="pro-gate__divider" aria-hidden>
+        <span>or</span>
+      </div>
+
+      <EarlyAccessForm
+        source={source}
+        variant="inline"
+        headline="Not ready to buy? Get 50% off at launch"
+        subheadline="Join the early-access list and we'll email a discount code the day Pro ships."
+      />
     </div>
   );
 }
