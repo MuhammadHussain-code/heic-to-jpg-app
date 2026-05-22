@@ -22,28 +22,30 @@ export function EarlyAccessForm({
   const [email, setEmail] = useState("");
   const [state, setState] = useState<State>({ kind: "idle" });
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValidEmail(email)) {
       setState({ kind: "error", message: "Please enter a valid email address." });
       return;
     }
     setState({ kind: "submitting" });
-    // Simulate a tiny latency for nicer UX feedback; the call is sync.
-    setTimeout(() => {
-      const result = addToWaitlist(email, source);
-      if (result.ok) {
-        setState({ kind: "success", email: result.entry.email });
-        setEmail("");
-      } else if (result.reason === "duplicate") {
-        setState({
-          kind: "error",
-          message: "You're already on the list — we'll be in touch.",
-        });
-      } else {
-        setState({ kind: "error", message: "That email doesn't look valid." });
-      }
-    }, 250);
+    const result = await addToWaitlist(email, source);
+    if (result.ok) {
+      setState({ kind: "success", email: result.entry.email });
+      setEmail("");
+    } else if (result.reason === "duplicate") {
+      setState({
+        kind: "error",
+        message: "You're already on the list — we'll be in touch.",
+      });
+    } else if (result.reason === "network") {
+      setState({
+        kind: "error",
+        message: "Couldn't reach our signup service. Check your connection and try again.",
+      });
+    } else {
+      setState({ kind: "error", message: "That email doesn't look valid." });
+    }
   };
 
   if (state.kind === "success") {

@@ -92,8 +92,9 @@ export function Account(): React.ReactElement {
         <section>
           <h2>Early-access signups on this device</h2>
           <p className="muted">
-            While Pro is in beta, we store waitlist signups locally. Once a
-            real backend is wired up, these will be POSTed to your CRM.
+            Signups are sent to MailerLite — the full list lives in your
+            MailerLite dashboard. The entries below are a local mirror of what
+            was submitted from this browser, kept for quick reference.
           </p>
           <ul className="waitlist-admin">
             {waitlist.map((entry) => (
