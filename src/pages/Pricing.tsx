@@ -1,17 +1,24 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EarlyAccessForm } from "../components/EarlyAccessForm";
-import { Modal } from "../components/Modal";
 import { Link } from "../lib/router";
 
 type Billing = "monthly" | "yearly";
-type ModalKind = null | "pro" | "team";
 
 export function Pricing(): React.ReactElement {
   const [billing, setBilling] = useState<Billing>("yearly");
-  const [modal, setModal] = useState<ModalKind>(null);
+  const bannerRef = useRef<HTMLElement | null>(null);
+  const [pulse, setPulse] = useState(false);
 
   const proPrice = billing === "monthly" ? "$5" : "$3.50";
   const teamPrice = billing === "monthly" ? "$19" : "$15";
+
+  const jumpToWaitlist = () => {
+    const el = bannerRef.current;
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setPulse(true);
+    window.setTimeout(() => setPulse(false), 1800);
+  };
 
   return (
     <div className="page-pricing">
@@ -86,7 +93,7 @@ export function Pricing(): React.ReactElement {
           <button
             type="button"
             className="btn btn--primary btn--block"
-            onClick={() => setModal("pro")}
+            onClick={jumpToWaitlist}
           >
             Join waitlist — 50% off launch
           </button>
@@ -112,44 +119,25 @@ export function Pricing(): React.ReactElement {
           <button
             type="button"
             className="btn btn--ghost btn--block"
-            onClick={() => setModal("team")}
+            onClick={jumpToWaitlist}
           >
             Join team waitlist
           </button>
         </article>
       </div>
 
-      <section className="content-section pricing-waitlist">
+      <section
+        ref={bannerRef}
+        id="waitlist-banner"
+        className={`content-section pricing-waitlist${pulse ? " is-pulsing" : ""}`}
+      >
         <EarlyAccessForm
           source="pricing-banner"
           variant="banner"
-          headline="Pro launches soon — save 50% by joining early"
-          subheadline="We're rolling Pro out over the next few weeks. Anyone on the early-access list gets a launch-day discount code (50% off the first year) plus first access to the Background Remover and Batch Rename tools while they're in beta."
+          headline="Pro & Team launch soon — save 50% by joining early"
+          subheadline="We're rolling Pro and Team plans out over the next few weeks. Anyone on the early-access list gets a launch-day discount code (50% off the first year) plus first access to the Background Remover and Batch Rename tools while they're in beta."
         />
       </section>
-
-      <Modal
-        isOpen={modal !== null}
-        onClose={() => setModal(null)}
-        title={modal === "team" ? "Join the team waitlist" : "Join the Pro waitlist"}
-      >
-        {modal === "pro" && (
-          <EarlyAccessForm
-            source="pricing-pro-modal"
-            variant="modal"
-            headline="Get 50% off when Pro launches"
-            subheadline="Drop your email and we'll send your launch-day discount code. Pro unlocks Watermarking, Images → PDF, Background Remover, and Batch Rename — all in-browser, all private."
-          />
-        )}
-        {modal === "team" && (
-          <EarlyAccessForm
-            source="pricing-team-modal"
-            variant="modal"
-            headline="Team plans launch alongside Pro"
-            subheadline="Join the waitlist and we'll reach out at launch with team pricing, shared brand presets, and a Conversion API trial. The 50% launch discount applies to team seats too."
-          />
-        )}
-      </Modal>
 
       <section className="content-section">
         <h2>Compare plans</h2>
