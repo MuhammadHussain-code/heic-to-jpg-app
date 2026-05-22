@@ -2063,3 +2063,49 @@ code {
   padding: 0 !important;
   text-align: left !important;
 }
+
+/* MailerLite "Thank you" success state — force readable colors on our dark theme. */
+.waitlist [class*="ml-form-success"],
+.waitlist .ml-form-successBody,
+.waitlist .ml-form-successContent {
+  background: transparent !important;
+  color: var(--text) !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+.waitlist [class*="ml-form-success"] h1,
+.waitlist [class*="ml-form-success"] h2,
+.waitlist [class*="ml-form-success"] h3,
+.waitlist [class*="ml-form-success"] h4,
+.waitlist [class*="ml-form-success"] p,
+.waitlist [class*="ml-form-success"] span,
+.waitlist [class*="ml-form-success"] div {
+  color: var(--text) !important;
+  background: transparent !important;
+}
+.waitlist [class*="ml-form-success"] h1,
+.waitlist [class*="ml-form-success"] h2,
+.waitlist [class*="ml-form-success"] h3,
+.waitlist [class*="ml-form-success"] h4 {
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  margin: 0 0 0.4rem !important;
+}
+.waitlist [class*="ml-form-success"] a {
+  color: var(--accent) !important;
+}
+
+/* Pulse highlight when CTA buttons scroll to the waitlist banner. */
+.pricing-waitlist {
+  scroll-margin-top: 2rem;
+  border-radius: 14px;
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.pricing-waitlist.is-pulsing {
+  animation: waitlist-pulse 1.8s ease-out 1;
+}
+@keyframes waitlist-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(99, 179, 237, 0.55); }
+  40%  { box-shadow: 0 0 0 12px rgba(99, 179, 237, 0.18); }
+  100% { box-shadow: 0 0 0 0 rgba(99, 179, 237, 0); }
+}
