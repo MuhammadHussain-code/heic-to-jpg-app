@@ -49,7 +49,7 @@ export function About(): React.ReactElement {
         <h2>Get in touch</h2>
         <p>
           Bug reports, ideas, complaints, fan mail — send them to{" "}
-          <a href="mailto:hello@snapforge.example">hello@snapforge.example</a>{" "}
+          <a href="mailto:hello@muhammad-hussain.com">hello@muhammad-hussain.com</a>{" "}
           or open an issue on our <Link to="/contact">contact page</Link>.
         </p>
       </section>

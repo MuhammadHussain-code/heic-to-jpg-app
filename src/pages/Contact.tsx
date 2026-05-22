@@ -48,10 +48,10 @@ export function Contact(): React.ReactElement {
       <section>
         <h2>Direct emails</h2>
         <ul>
-          <li>Support — <a href="mailto:support@snapforge.example">support@snapforge.example</a></li>
-          <li>Sales — <a href="mailto:sales@snapforge.example">sales@snapforge.example</a></li>
-          <li>Privacy — <a href="mailto:privacy@snapforge.example">privacy@snapforge.example</a></li>
-          <li>Security — <a href="mailto:security@snapforge.example">security@snapforge.example</a></li>
+          <li>Support — <a href="mailto:support@muhammad-hussain.com">support@muhammad-hussain.com</a></li>
+          <li>Sales — <a href="mailto:sales@muhammad-hussain.com">sales@muhammad-hussain.com</a></li>
+          <li>Privacy — <a href="mailto:privacy@muhammad-hussain.com">privacy@muhammad-hussain.com</a></li>
+          <li>Security — <a href="mailto:security@muhammad-hussain.com">security@muhammad-hussain.com</a></li>
         </ul>
       </section>
     </div>
